@@ -10,6 +10,7 @@ class User:
         for classdata in self.classes:
             classNames.append(classdata["Class Name"])
         return classNames
+
     #Function for listing all of the professors they have
     def listProfessors(self):
         professors = []

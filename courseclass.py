@@ -17,6 +17,15 @@ class Course:
             break
         else: 
             self.professors.append(new)
+        return self.professors
 
+    def addSection (self, new):
+        if new in self.sections:
+            break
+        else
+            self.sections.append(new)
+            
+        return self.sections
+    
 
         
