@@ -20,5 +20,19 @@ async def on_ready():
 async def Initialize(ctx):
     await ctx.send(removeCommand(str(ctx.message.content)))
 
+@bot.command()
+async def IndividualClass(ctx):
+    men = ctx.message.mentions
+    for person in men:
+        await person.send("Please type in your classes in the following format, one class per message please. Finalize the message by sending .END")
+        await person.send("Class Name, course number, college, section number, professor")
+
+@bot.command()
+async def END(ctx):
+    if ctx.message.server is None:
+        #Insert code to run when someone dms
+    else:
+        await ctx.send("This command is not supported here...")
+
 
 bot.run(key)
