@@ -29,8 +29,13 @@ async def IndividualClass(ctx):
 
 @bot.command()
 async def END(ctx):
-    if ctx.message.server is None:
+    if ctx.message.guild is None:
         #Insert code to run when someone dms
+        past_msgs = list()
+        async for message in ctx.history(limit=5):
+            if message.author.bot == False:
+                past_msgs.append(message)
+        #ADD CODE HERE FOR DEALING WITH THE MESSAGE INPUTS
     else:
         await ctx.send("This command is not supported here...")
 
