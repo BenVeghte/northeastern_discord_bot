@@ -4,7 +4,15 @@ class User:
         self.nickname = nickname
         self.classes = classes
         #Format for classes:
-        #Professor, Section Number
+        #  [
+        #   {"Class Name" : asdfa,
+        #    "Professor": asdfasd, 
+        #    "Section" : asdfa
+        #   }, 
+        #   { repeat from first dict above
+        #    }
+        #
+
 
     #Function for Listing All of the classes they are currently taking
     def listClassNames(self):
