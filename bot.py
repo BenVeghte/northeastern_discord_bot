@@ -5,6 +5,8 @@ from additionalfunctions import *
 from userclass import *
 import asyncio
 
+userobjs = list()
+courseobjs = list()
 #This section of code imports the key from the text file and saves it as variable key
 keyfile = open('bot_key.txt')
 key = str(keyfile.read())
@@ -41,7 +43,7 @@ async def END(ctx):
                 past_msgs.append(message)
             elif message.author.bot == True:
                 break
-        past_msgs.reverse()
+        del past_msgs[0]
         newclassname = UIDtoAlpha(past_msgs[0].author.id)
         msgs_split = list()
         for num, msg in enumerate(past_msgs):
@@ -50,6 +52,11 @@ async def END(ctx):
                 await ctx.author.send("There is something wrong with message number {}, please redo the command and fix the mistake").format(num))
                 return
             #INSERT CODE HERE FOR ADDING COURSES AND USER OBJECTS
+        for key in globals().keys():
+            if key = newclassname:
+                
+            
+
 
 
 

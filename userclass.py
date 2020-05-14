@@ -3,10 +3,12 @@ class User:
         self.userid = userid
         self.nickname = nickname
         self.classes = classes
+        #Format for classes:
+        #Professor, Section Number
 
     #Function for Listing All of the classes they are currently taking
     def listClassNames(self):
-        classNames =[]
+        classNames =list()
         for classdata in self.classes:
             classNames.append(classdata["Class Name"])
         return classNames
