@@ -54,6 +54,28 @@ async def END(ctx):
             #INSERT CODE HERE FOR ADDING COURSES AND USER OBJECTS
         for key in globals().keys():
             if key = newclassname:
+                for msg in msgs_split:
+                    coursenadj = msg[0].replace(" ", "").lower
+                    match = False
+                    for course in globals()[newclassname].classes:
+                        if course["Class Name"].replace(" ", "").lower == coursenadj:
+                            match = True
+                            course["Professor"] = msg[4]
+                            course["Section"] = msg[3]
+                            break
+                    if match is False:
+                        globals()[newclassname].classes.append(
+                            {"Class Name" : msg[0],
+                            "Professor" : msg[4],
+                            "Section" : msg[3]}
+                        )
+                    
+
+
+                    
+
+                            
+
                 
             
 
