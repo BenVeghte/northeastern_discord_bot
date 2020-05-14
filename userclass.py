@@ -16,14 +16,14 @@ class User:
 
     #Function for Listing All of the classes they are currently taking
     def listClassNames(self):
-        classNames =list()
-        for classdata in self.classes:
-            classNames.append(classdata["Class Name"])
+        classNames = list()
+        for c in self.classes:
+            classNames.append(c["Class Name"])
         return classNames
 
     #Function for listing all of the professors they have
-    def listProfessors(self):
-        professors = []
-        for classdata in self.classes:
-            professors.append(classdata["Professor"])
+    def listProfessor(self):
+        professors = list()
+        for c in self.classes:
+            professors.append(c["Professor"])
         return professors
