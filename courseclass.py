@@ -5,7 +5,7 @@ class Course:
         self.college = college
         self.sections = list(secNums)
         self.professors = list(profs)
-        self.members = members
+        self.members = list(members)
 
     #Returns the collge of the class and number in the format of "ME2350" (Statics)
     def fullCNum(self):
@@ -22,6 +22,11 @@ class Course:
         if new  not in self.sections:
             self.sections.append(new)
         return self.sections
+    
+    def addMember (self, new):
+        if new not in self.members:
+            self.members.append(new)
+        return self.members
     
 
         
