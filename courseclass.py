@@ -3,9 +3,9 @@ class Course:
         self.courseName = cName
         self.courseNumber = cNum
         self.college = college
-        self.sections = list(secNums)
-        self.professors = list(profs)
-        self.members = list(members)
+        self.sections = secNums
+        self.professors = profs
+        self.members = members
 
     #Returns the collge of the class and number in the format of "ME2350" (Statics)
     def fullCNum(self):
