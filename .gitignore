@@ -2,6 +2,7 @@
 pythonexperimentation.py
 bot_key.txt 
 *.json
+pickleoutput/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
