@@ -1,8 +1,9 @@
 #Custom files
 pythonexperimentation.py
+pythonexperimentation2.py
 bot_key.txt 
 *.json
-pickleoutput/
+*.pkl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
