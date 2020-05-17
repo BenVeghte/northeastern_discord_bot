@@ -100,8 +100,8 @@ def shutdownPickle():
     for key in globals().keys():
         if type(globals()[key]) is Course:
             picklelist.append(globals()[key])
-            print(key)
-        if type(globals()[key]) is U
+        if type(globals()[key]) is User:
+            picklelist.append(globals()[key])
     pickle.dump(picklelist, picklefile)
     picklefile.close()
 
