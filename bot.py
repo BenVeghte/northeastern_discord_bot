@@ -3,7 +3,10 @@ from discord.ext import commands
 from discord.utils import get
 from additionalfunctions import *
 from userclass import *
+from courseclass import *
 import asyncio
+import atexit
+import os
 
 userobjs = list()
 courseobjs = list()
@@ -11,6 +14,9 @@ courseobjs = list()
 keyfile = open('bot_key.txt')
 key = str(keyfile.read())
 keyfile.close()
+
+#Loading the pickle file with the stored values
+
 
 bot = commands.Bot(command_prefix='.')
 
@@ -44,7 +50,8 @@ async def END(ctx):
             elif message.author.bot == True:
                 break
         del past_msgs[0]
-        newclassname = UIDtoAlpha(past_msgs[0].author.id)
+        authID = past_msgs[0].author.id
+        newclassname = UIDtoAlpha(authID)
         msgs_split = list()
         for num, msg in enumerate(past_msgs):
             msgs_split[num-1] = msg.content.split(',').trim().lower()
@@ -69,21 +76,33 @@ async def END(ctx):
                             "Professor" : msg[4],
                             "Section" : msg[3]}
                         )
-                    
-
-
-                    
-
-                            
-
-                
-            
-
-
-
+        for msg in msgs_split:
+            match = False
+            for key in globals().keys():
+                if msg[0].replace(" ", "").lower == key:
+                    match = True
+                    globals()[key].addProf(msg[4])
+                    globals()[key].addSection(msg[3])
+                    globals()[key].addMember(authID)
+            if match is False:
+                globals()[msg[0].replace(" ", "").lower] = Course(msg[0], msg[1], msg[2], msg[3], msg[4], authID)
 
     else:
         await ctx.send("This command is not supported here...")
 
+#Code for saving variables in case of shutdown
+@atexit.register
+def shutdownPickle():
+    rename(r'pickleoutput/classes.pkl', r'pickleoutput/old.pkl')
+    picklefile = open("pickleoutput/classes.pkl", 'ab')
+    print("One last thing...")
+    picklelist = list()
+    for key in globals().keys():
+        if type(globals()[key]) is Course:
+            picklelist.append(globals()[key])
+            print(key)
+        if type(globals()[key]) is U
+    pickle.dump(picklelist, picklefile)
+    picklefile.close()
 
 bot.run(key)
