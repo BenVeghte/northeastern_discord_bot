@@ -14,3 +14,7 @@ def UIDtoAlpha(idnum):
     for num in idnum:
         out.append(alphabet[int(num)])
     return ''.join(out)
+
+def generateCourseKey(courseName):
+    key = courseName.replace(" ", "").lower()
+    return key
