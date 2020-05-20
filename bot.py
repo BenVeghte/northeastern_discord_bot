@@ -93,7 +93,13 @@ async def END(ctx):
 #Code for saving variables in case of shutdown
 @atexit.register
 def shutdownPickle():
-    rename(r'pickleoutput/classes.pkl', r'pickleoutput/old.pkl')
+    try:
+        os.rename(r'pickleoutput/classes.pkl', r'pickleoutput/old.pkl')
+    except FileExistsError:
+        os.remove(r'pickleoutput/old.pkl')
+        os.rename(r'pickleoutput/classes.pkl', r'pickleoutput/old.pkl')
+        
+
     picklefile = open("pickleoutput/classes.pkl", 'ab')
     print("One last thing...")
     picklelist = list()
