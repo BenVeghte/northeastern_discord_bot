@@ -4,6 +4,7 @@ from discord.utils import get
 from additionalfunctions import *
 from userclass import *
 from courseclass import *
+import pickle
 import asyncio
 import atexit
 import os
@@ -16,6 +17,17 @@ key = str(keyfile.read())
 keyfile.close()
 
 #Loading the pickle file with the stored values
+picklefile = open("pickleoutput/classes.pkl", 'rb')
+pklload  = pickle.load(picklefile)
+picklefile.close()
+for i in pklload:
+    if type(i) is Course:
+        globals()[generateCourseKey(i.courseName)] = i
+    if type(i) is User:
+        globals()[UIDtoAlpha(i.userid)] = i
+del i
+del pklload
+
 
 
 bot = commands.Bot(command_prefix='.')
