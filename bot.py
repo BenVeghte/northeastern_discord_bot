@@ -107,44 +107,83 @@ async def END(ctx):
         newclassname = UIDtoAlpha(authID)
         
         #Iterates through the past messages
-        for num, msg in enumerate(past_msgs):
-            msgs_split = list()
+        msgs_split = list()
+        for msg in past_msgs:
+        
             #Splits each message to a nested list, each row is a new message, each column is a different section, separated by a column with leading and trailing spaces removed
-            msgs_split[num-1] = msg.content.split(',').trim()
-
+            msgs_split.append(msg.content.split(',').trim())
+            
             #If there are to few or to many inputs, exit out of the function and make them call it again.
             if len(msgs_split) != 5:
                 await ctx.author.send("There is something wrong with message number {}, please redo the command and fix the mistake").format(num))
                 return
-        
-        #For loop to add/adjust Course Objects
+        match2 = False
+        #For loop to add/adjust User Objects
         for key in globals().keys():
-            #If
+            #If the user class already exists
             if key = newclassname:
+                match2 = True
+
+                #goes through each row in the message history and gets the first item (coursename) and turns it into something that accounts for extra spaces and wierd captitalization
                 for msg in msgs_split:
+                    #Turns the name in to something that accounts for weird spaces and capitalization
                     coursenadj = msg[0].replace(" ", "").lower
                     match = False
+
+                    #Checks to see if  the course already exists in the user class
                     for course in globals()[newclassname].classes:
+
+                        #If the name is a match, over write old stored data in it incase someone is trying to make a modification
                         if course["Class Name"].replace(" ", "").lower == coursenadj:
                             match = True
                             course["Professor"] = msg[4]
                             course["Section"] = msg[3]
                             break
+
+                    #If the course doesnt exist in the User class already, add it to the end of the list of classes    
                     if match is False:
                         globals()[newclassname].classes.append(
                             {"Class Name" : msg[0],
                             "Professor" : msg[4],
                             "Section" : msg[3]}
                         )
-        #For loop to add/adjust User Objects
+
+        #If the user class doesnt exist already, create it                
+        if match2 is False:
+                classlst = list()
+                msgs_split = list()
+            for msg in past_msgs:
+                #Trims the messages and splits it at the commas
+                msgs_split.append(msg.content.split(",").trim())
+                classlst.append({
+                    "Class Name" : msg[0],
+                    "Professor": msg[4], 
+                    "Section" : msg[3]
+                })
+                #Splits each message to a nested list, each row is a new message, each column is a different section, separated by a column with leading and trailing spaces removed
+                msgs_split[num-1] = msg.content.split(',').trim()
+            globals()[newclassname] = User(userid = authID, classes= classlst)
+
+
+
+
+
+        #For loop to add/adjust Course Objects
         for msg in msgs_split:
             match = False
+            
+            #Goes through each of  global variables and compares it to each of the course names in the past messages
             for key in globals().keys():
+
+                #If there is a match
                 if msg[0].replace(" ", "").lower == key:
                     match = True
+                    #Add professors, sections, and members, builtin functions account for redundancy
                     globals()[key].addProf(msg[4])
                     globals()[key].addSection(msg[3])
                     globals()[key].addMember(authID)
+                    
+            #If there is no match, in any of the global variables
             if match is False:
                 globals()[msg[0].replace(" ", "").lower] = Course(msg[0], msg[1], msg[2], msg[3], msg[4], authID)
 
