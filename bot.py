@@ -53,23 +53,28 @@ else: #If current gen pickle file does exist
         if type(i) is User:
             globals()[UIDtoAlpha(i.userid)] = i
             userobjs.append(UIDtoAlpha(i.userid))
-            
+
 del i
 del pklload
 
 
 
+
+#Beginning of the code for running the discord bot
 bot = commands.Bot(command_prefix='.')
 
+#Function to alert when the bot is ready to accept commands
 @bot.event
 async def on_ready():
     print('Bot is ready.')
 
+#This function mostly serves to test various discord interactions
 @bot.command()
 async def Initialize(ctx):
     await ctx.send(ctx.message.author.mention)
     print(ctx.message.author.id)
 
+#Sends a DM to the person who used this command with the necessary information to correctly utilize the .End function
 @bot.command()
 async def IndividualClass(ctx):
     men = ctx.message.mentions
@@ -80,27 +85,41 @@ async def IndividualClass(ctx):
         await person.send("Statics, 2350, ME, 1, Coskun")
         await person.send("The order of this is very important as is the number of inputs, \n please check, double check and if neccessary edit, before sending the .END command")
 
+#This function serves to collect user sent data and turn it in to course and user objects, doesn't create channels yet
 @bot.command()
 async def END(ctx):
+    #Ensures the message was in a DM channel and not from a bot so it doesn't get spammed
     if ctx.message.guild is None and ctx.message.author.bot is False:
-        #Insert code to run when someone dms
-        past_msgs = list()
+        #Gathers past messages
         async for message in ctx.history(limit=10):
+            #Once one of the past messages is a bots (sent by this bot), it stops reading
             if message.author.bot == False:
                 past_msgs.append(message)
             elif message.author.bot == True:
                 break
+
+        #Deletes the first message as it is the .End command that triggered this sequence and we don't want to use that
         del past_msgs[0]
+
+        #Gets the author id to store the user object under
         authID = past_msgs[0].author.id
+        #Because variables cant have numbers, this function turns numbers to the corresponding letter
         newclassname = UIDtoAlpha(authID)
-        msgs_split = list()
+        
+        #Iterates through the past messages
         for num, msg in enumerate(past_msgs):
-            msgs_split[num-1] = msg.content.split(',').trim().lower()
+            msgs_split = list()
+            #Splits each message to a nested list, each row is a new message, each column is a different section, separated by a column with leading and trailing spaces removed
+            msgs_split[num-1] = msg.content.split(',').trim()
+
+            #If there are to few or to many inputs, exit out of the function and make them call it again.
             if len(msgs_split) != 5:
                 await ctx.author.send("There is something wrong with message number {}, please redo the command and fix the mistake").format(num))
                 return
-            #INSERT CODE HERE FOR ADDING COURSES AND USER OBJECTS
+        
+        #For loop to add/adjust Course Objects
         for key in globals().keys():
+            #If
             if key = newclassname:
                 for msg in msgs_split:
                     coursenadj = msg[0].replace(" ", "").lower
@@ -117,6 +136,7 @@ async def END(ctx):
                             "Professor" : msg[4],
                             "Section" : msg[3]}
                         )
+        #For loop to add/adjust User Objects
         for msg in msgs_split:
             match = False
             for key in globals().keys():
