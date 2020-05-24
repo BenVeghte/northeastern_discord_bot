@@ -9,22 +9,51 @@ import asyncio
 import atexit
 import os
 
-userobjs = list()
-courseobjs = list()
+
 #This section of code imports the key from the text file and saves it as variable key
 keyfile = open('bot_key.txt')
 key = str(keyfile.read())
 keyfile.close()
 
-#Loading the pickle file with the stored values
-picklefile = open("pickleoutput/classes.pkl", 'rb')
-pklload  = pickle.load(picklefile)
-picklefile.close()
-for i in pklload:
-    if type(i) is Course:
-        globals()[generateCourseKey(i.courseName)] = i
-    if type(i) is User:
-        globals()[UIDtoAlpha(i.userid)] = i
+
+
+#Loading the pickle files with the stored objects from previous cycles of the program
+try: #Try to open current version of pkl output for objects
+    picklefile = open("pickleoutput/classes.pkl", 'rb')
+
+except FileNotFoundError:
+    try: #Try to open old version of pkl output for objects
+        picklefile = open("pickleoutput/old.pkl", 'rb')
+
+    except FileNotFoundError:
+        print("There are not existing object pickle files to load")
+
+    else: #If old pickle files does exist
+        pklload  = pickle.load(picklefile)
+        picklefile.close()
+
+        for i in pklload:
+            if type(i) is Course:
+                globals()[generateCourseKey(i.courseName)] = i
+                courseobjs.append(generateCourseKey(i.courseName))
+
+            if type(i) is User:
+                globals()[UIDtoAlpha(i.userid)] = i
+                userobjs.append(UIDtoAlpha(i.userid))
+
+else: #If current gen pickle file does exist
+    pklload  = pickle.load(picklefile)
+    picklefile.close()
+
+    for i in pklload:
+        if type(i) is Course:
+            globals()[generateCourseKey(i.courseName)] = i
+            courseobjs.append(generateCourseKey(i.courseName))
+
+        if type(i) is User:
+            globals()[UIDtoAlpha(i.userid)] = i
+            userobjs.append(UIDtoAlpha(i.userid))
+            
 del i
 del pklload
 
