@@ -15,6 +15,9 @@ keyfile = open('bot_key.txt')
 key = str(keyfile.read())
 keyfile.close()
 
+#Creates list for custom objects to streamline the comparing of existing user and course classes
+userobjs = list()
+courseobjs = list()
 
 
 #Loading the pickle files with the stored objects from previous cycles of the program
@@ -86,6 +89,8 @@ async def IndividualClass(ctx):
 #This function serves to collect user sent data and turn it in to course and user objects, doesn't create channels yet
 @bot.command()
 async def END(ctx):
+    global userobjs
+    global courseobjs
     past_msgs = list()
     #Ensures the message was in a DM channel and not from a bot so it doesn't get spammed
     if ctx.message.guild is None and ctx.message.author.bot is False:
@@ -119,24 +124,27 @@ async def END(ctx):
             if len(msgs_split[-1]) != 5:
                 await ctx.author.send("There is something wrong with message number {}, please redo the command and fix the mistake".format(num))
                 return
+        
+        #msgs_split is full separated and accessable anywhere in this function. Each row is a new message, each column is a separate item
+
 
         match2 = False
-        #For loop to add/adjust User Objects
-        for key in globals().keys():                    ##EDIT HERE: CHANGE FROM A FOR LOOP LOOKING THROUGH ALL GLOBALS TO FOR LOOP LOOKING THROUGH LIST OF USER CLASSES
+        ########### USER OBJECTS #########
+        for key in userobjs:
             #If the user class already exists
             if key == newclassname:
                 match2 = True
 
-                #goes through each row in the message history and gets the first item (coursename) and turns it into something that accounts for extra spaces and wierd captitalization
+                #If the user class already exists
                 for msg in msgs_split:
-                    #Turns the name in to something that accounts for weird spaces and capitalization
+                    #Get the course name in each message and see if it already exists
                     coursenadj = msg[0].replace(" ", "").lower
                     match = False
 
                     #Checks to see if  the course already exists in the user class
                     for course in globals()[newclassname].classes:
 
-                        #If the name is a match, over write old stored data in it incase someone is trying to make a modification
+                        #If the name is a match, overwrite old stored data in it incase someone is trying to make a modification
                         if course["Class Name"].replace(" ", "").lower == coursenadj:
                             match = True
                             course["Professor"] = msg[4]
@@ -154,18 +162,18 @@ async def END(ctx):
         #If the user class doesnt exist already, create it                
         if match2 is False:
             classlst = list()
-            msgs_split = list()
-            for msg in past_msgs:
-                #Trims the messages and splits it at the commas
-                msgs_split.append(msg.content.split(","))
+            for msg in msgs_split:
+                #Gets each messages and adds the neccessary info to add to the class list
                 classlst.append({
                     "Class Name" : msg[0],
+                    "Class Number" : msg[1]
                     "Professor": msg[4], 
                     "Section" : msg[3]
                 })
-                #Splits each message to a nested list, each row is a new message, each column is a different section, separated by a column with leading and trailing spaces removed
-                msgs_split[num-1] = msg.content.split(',').trim()
+
+            userobjs.append(newclassname)
             globals()[newclassname] = User(userid = authID, classes= classlst)
+            del classlst
 
 
 
@@ -176,7 +184,7 @@ async def END(ctx):
             match = False
             
             #Goes through each of  global variables and compares it to each of the course names in the past messages
-            for key in globals().keys():
+            for key in courseobjs:
 
                 #If there is a match
                 if msg[0].replace(" ", "").lower == key:
@@ -188,7 +196,9 @@ async def END(ctx):
                     
             #If there is no match, in any of the global variables
             if match is False:
-                globals()[msg[0].replace(" ", "").lower] = Course(msg[0], msg[1], msg[2], msg[3], msg[4], authID)
+                cname = msg[0].replace(" ", "").lower
+                courseobjs.append(cname)
+                globals()[cname] = Course(msg[0], msg[1], msg[2], msg[3], msg[4], authID)
 
     else:
         await ctx.send("This command is not supported here...")
