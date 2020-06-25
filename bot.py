@@ -54,8 +54,6 @@ else: #If current gen pickle file does exist
             globals()[UIDtoAlpha(i.userid)] = i
             userobjs.append(UIDtoAlpha(i.userid))
 
-del i
-del pklload
 
 
 
@@ -88,6 +86,7 @@ async def IndividualClass(ctx):
 #This function serves to collect user sent data and turn it in to course and user objects, doesn't create channels yet
 @bot.command()
 async def END(ctx):
+    past_msgs = list()
     #Ensures the message was in a DM channel and not from a bot so it doesn't get spammed
     if ctx.message.guild is None and ctx.message.author.bot is False:
         #Gathers past messages
@@ -108,20 +107,24 @@ async def END(ctx):
         
         #Iterates through the past messages
         msgs_split = list()
-        for msg in past_msgs:
+        for num, msg in enumerate(past_msgs):
         
             #Splits each message to a nested list, each row is a new message, each column is a different section, separated by a column with leading and trailing spaces removed
-            msgs_split.append(msg.content.split(',').trim())
+            msgs_split.append(msg.content.split(','))
+            for num, mg in enumerate(msgs_split[-1]):
+                msgs_split[-1][num] = mg.strip()
+            del num
             
             #If there are to few or to many inputs, exit out of the function and make them call it again.
-            if len(msgs_split) != 5:
-                await ctx.author.send("There is something wrong with message number {}, please redo the command and fix the mistake").format(num))
+            if len(msgs_split[-1]) != 5:
+                await ctx.author.send("There is something wrong with message number {}, please redo the command and fix the mistake".format(num))
                 return
+
         match2 = False
         #For loop to add/adjust User Objects
-        for key in globals().keys():
+        for key in globals().keys():                    ##EDIT HERE: CHANGE FROM A FOR LOOP LOOKING THROUGH ALL GLOBALS TO FOR LOOP LOOKING THROUGH LIST OF USER CLASSES
             #If the user class already exists
-            if key = newclassname:
+            if key == newclassname:
                 match2 = True
 
                 #goes through each row in the message history and gets the first item (coursename) and turns it into something that accounts for extra spaces and wierd captitalization
@@ -150,11 +153,11 @@ async def END(ctx):
 
         #If the user class doesnt exist already, create it                
         if match2 is False:
-                classlst = list()
-                msgs_split = list()
+            classlst = list()
+            msgs_split = list()
             for msg in past_msgs:
                 #Trims the messages and splits it at the commas
-                msgs_split.append(msg.content.split(",").trim())
+                msgs_split.append(msg.content.split(","))
                 classlst.append({
                     "Class Name" : msg[0],
                     "Professor": msg[4], 
