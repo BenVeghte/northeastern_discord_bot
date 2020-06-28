@@ -5,9 +5,10 @@ class User:
         self.classes = classes
         #Format for classes:
         #  [
-        #   {"Class Name" : asdfa,
-        #    "Professor": asdfasd, 
-        #    "Section" : asdfa
+        #   {"Class Name" : "asdf",
+        #    "Class Number" : 2350,
+        #    "Professor": "asdfasd", 
+        #    "Section" : 01
         #   }, 
         #   { repeat from first dict above
         #    }
