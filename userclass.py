@@ -22,7 +22,7 @@ class User:
         return classNames
 
     #Function for listing all of the professors they have
-    def listProfessor(self):
+    def listProfessors(self):
         professors = list()
         for c in self.classes:
             professors.append(c["Professor"])
