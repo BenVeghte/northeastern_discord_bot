@@ -199,7 +199,15 @@ async def END(ctx):
                 cname = msg[0].replace(" ", "").lower
                 courseobjs.append(cname)
                 globals()[cname] = Course(msg[0], msg[1], msg[2], msg[3], msg[4], authID)
-
+        await ctx.send("Thank you for your input, your input has been processed here is the result:")
+        await ctx.send("Here is your user class:")
+        await ctx.send("UserID: {} \nMost recent class name: {} \n Class number: {} \n Professor: {}".format(
+            globals()[userobjs[-1]].userid,
+            globals()[userobjs[-1]].classes[-1]["Class Name"],
+            globals()[userobjs[-1]].classes[-1]["Class Number"],
+            globals()[userobjs[-1]].classes[-1]["Professor"]
+            ))
+    
     else:
         await ctx.send("This command is not supported here...")
 
