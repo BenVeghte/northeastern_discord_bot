@@ -166,13 +166,13 @@ async def END(ctx):
                 #Gets each messages and adds the neccessary info to add to the class list
                 classlst.append({
                     "Class Name" : msg[0],
-                    "Class Number" : msg[1]
+                    "Class Number" : msg[1],
                     "Professor": msg[4], 
                     "Section" : msg[3]
                 })
 
             userobjs.append(newclassname)
-            globals()[newclassname] = User(userid = authID, classes= classlst)
+            globals()[newclassname] = User(userid = authID, classes= classlst, nickname = "")
             del classlst
 
 
