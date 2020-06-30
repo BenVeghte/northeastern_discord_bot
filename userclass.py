@@ -28,3 +28,8 @@ class User:
         for c in self.classes:
             professors.append(c["Professor"])
         return professors
+
+    def latestClassOutput (self):
+        latest = self.classes[-1]
+        s = "Latest Class: {}\nClass Number: {}\nProfessor: {}\nSection Number: {}\n ----------------".format(latest["Class Name"], latest["Class Number"], latest["Professor"], latest["Section"])
+        return s

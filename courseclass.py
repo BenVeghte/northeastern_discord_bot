@@ -27,6 +27,10 @@ class Course:
         if new not in self.members:
             self.members.append(new)
         return self.members
+
+    def output(self):
+        s = "Course Name: {}\nNumber: {}\nCollege: {}\nSections: {}\nProfessors: {}\nMembers: {}\n----------------".format(self.courseName, self.courseNumber, self.college, self.sections, self.professors, self.members)
+        return s
     
 
         
