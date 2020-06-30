@@ -75,6 +75,7 @@ async def Initialize(ctx):
     await ctx.send(ctx.message.author.mention)
     print(ctx.message.author.id)
 
+
 #Sends a DM to the person who used this command with the necessary information to correctly utilize the .End function
 @bot.command()
 async def IndividualClass(ctx):
@@ -116,9 +117,8 @@ async def END(ctx):
         
             #Splits each message to a nested list, each row is a new message, each column is a different section, separated by a column with leading and trailing spaces removed
             msgs_split.append(msg.content.split(','))
-            for num, mg in enumerate(msgs_split[-1]):
+            for num1, mg in enumerate(msgs_split[-1]):
                 msgs_split[-1][num] = mg.strip()
-            del num
             
             #If there are to few or to many inputs, exit out of the function and make them call it again.
             if len(msgs_split[-1]) != 5:
@@ -148,6 +148,7 @@ async def END(ctx):
                         if course["Class Name"].replace(" ", "").lower == coursenadj:
                             match = True
                             course["Professor"] = msg[4]
+                            course["Class Number"] = msg[1]
                             course["Section"] = msg[3]
                             break
 
@@ -155,9 +156,11 @@ async def END(ctx):
                     if match is False:
                         globals()[newclassname].classes.append(
                             {"Class Name" : msg[0],
+                            "Class Number" : msg[1],
                             "Professor" : msg[4],
                             "Section" : msg[3]}
                         )
+                    await ctx.send(globals()[newclassname].latestClassOutput())
 
         #If the user class doesnt exist already, create it                
         if match2 is False:
@@ -173,6 +176,7 @@ async def END(ctx):
 
             userobjs.append(newclassname)
             globals()[newclassname] = User(userid = authID, classes= classlst, nickname = "")
+            await ctx.send(globals()[newclassname].latestClassOutput())
             del classlst
 
 
@@ -193,21 +197,16 @@ async def END(ctx):
                     globals()[key].addProf(msg[4])
                     globals()[key].addSection(msg[3])
                     globals()[key].addMember(authID)
+                    await ctx.send(globals()[key].output())
                     
             #If there is no match, in any of the global variables
             if match is False:
                 cname = msg[0].replace(" ", "").lower
                 courseobjs.append(cname)
-                globals()[cname] = Course(msg[0], msg[1], msg[2], msg[3], msg[4], authID)
-        await ctx.send("Thank you for your input, your input has been processed here is the result:")
-        await ctx.send("Here is your user class:")
-        await ctx.send("UserID: {} \nMost recent class name: {} \n Class number: {} \n Professor: {}".format(
-            globals()[userobjs[-1]].userid,
-            globals()[userobjs[-1]].classes[-1]["Class Name"],
-            globals()[userobjs[-1]].classes[-1]["Class Number"],
-            globals()[userobjs[-1]].classes[-1]["Professor"]
-            ))
-    
+                globals()[cname] = Course(msg[0], msg[1], msg[2], [msg[3]], [msg[4]], [authID])
+                await ctx.send(globals()[cname].output())
+
+
     else:
         await ctx.send("This command is not supported here...")
 
