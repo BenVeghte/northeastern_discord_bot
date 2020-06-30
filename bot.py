@@ -118,7 +118,7 @@ async def END(ctx):
             #Splits each message to a nested list, each row is a new message, each column is a different section, separated by a column with leading and trailing spaces removed
             msgs_split.append(msg.content.split(','))
             for num1, mg in enumerate(msgs_split[-1]):
-                msgs_split[-1][num] = mg.strip()
+                msgs_split[-1][num1] = mg.strip()
             
             #If there are to few or to many inputs, exit out of the function and make them call it again.
             if len(msgs_split[-1]) != 5:
