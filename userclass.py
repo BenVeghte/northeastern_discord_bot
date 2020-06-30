@@ -33,3 +33,14 @@ class User:
         latest = self.classes[-1]
         s = "Latest Class: {}\nClass Number: {}\nProfessor: {}\nSection Number: {}\n ----------------".format(latest["Class Name"], latest["Class Number"], latest["Professor"], latest["Section"])
         return s
+    
+    def output (self):
+        s = "UID: {}\nNickname: {}".format(self.userid, self.nickname)
+        for num, cla in self.classes:
+            s = s + "Class {}: {}|||\tNumber: {}|||\tSection: {}|||\tProfessor: {}\n".format(
+                num+1,
+                self.classes[num]["Class Name"], 
+                self.classes[num]["Class Number"],
+                self.classes[num]["Section"], 
+                self.classes[num]["Professor"])
+        return s
