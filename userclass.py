@@ -35,12 +35,13 @@ class User:
         return s
     
     def output (self):
-        s = "UID: {}\nNickname: {}".format(self.userid, self.nickname)
-        for num, cla in self.classes:
-            s = s + "Class {}: {}|||\tNumber: {}|||\tSection: {}|||\tProfessor: {}\n".format(
+        s = "UID: {}\nNickname: {}\n".format(self.userid, self.nickname)
+        for num, cla in enumerate(self.classes):
+            s = s + "Class {}: {}  |  Number: {}  |  Section: {}  |  Professor: {}\n".format(
                 num+1,
                 self.classes[num]["Class Name"], 
                 self.classes[num]["Class Number"],
                 self.classes[num]["Section"], 
                 self.classes[num]["Professor"])
+        s = s + "----------------"
         return s
