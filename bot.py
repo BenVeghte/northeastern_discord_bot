@@ -109,7 +109,7 @@ async def END(ctx):
         #Gets the author id to store the user object under
         authID = past_msgs[0].author.id
         #Because variables cant have numbers, this function turns numbers to the corresponding letter
-        newclassname = UIDtoAlpha(authID)
+        newusername = UIDtoAlpha(authID)
         
         #Iterates through the past messages
         msgs_split = list()
@@ -119,92 +119,74 @@ async def END(ctx):
             msgs_split.append(msg.content.split(','))
             for num1, mg in enumerate(msgs_split[-1]):
                 msgs_split[-1][num1] = mg.strip()
-            
+            del num1
+            del mg
+            del past_msgs
+
+
             #If there are to few or to many inputs, exit out of the function and make them call it again.
             if len(msgs_split[-1]) != 5:
                 await ctx.author.send("There is something wrong with message number {}, please redo the command and fix the mistake".format(num))
                 return
-        
         #msgs_split is full separated and accessable anywhere in this function. Each row is a new message, each column is a separate item
+        del num
+        del msg 
 
-
-        match2 = False
-        ########### USER OBJECTS #########
-        for key in userobjs:
-            #If the user class already exists
-            if key == newclassname:
-                match2 = True
-
-                #If the user class already exists
-                for msg in msgs_split:
-                    #Get the course name in each message and see if it already exists
-                    coursenadj = msg[0].replace(" ", "").lower
-                    match = False
-
-                    #Checks to see if  the course already exists in the user class
-                    for course in globals()[newclassname].classes:
-
-                        #If the name is a match, overwrite old stored data in it incase someone is trying to make a modification
-                        if course["Class Name"].replace(" ", "").lower == coursenadj:
-                            match = True
-                            course["Professor"] = msg[4]
-                            course["Class Number"] = msg[1]
-                            course["Section"] = msg[3]
-                            break
-
-                    #If the course doesnt exist in the User class already, add it to the end of the list of classes    
-                    if match is False:
-                        globals()[newclassname].classes.append(
-                            {"Class Name" : msg[0],
+        #USER CLASS OBJECTS
+        match = False
+        if newusername in userobjs:
+            for msg in msgs_split:
+                for course in globals()[newusername].classes:
+                    n = msg[0].replace(" ", "").lower
+                    if course["Class Name"].replace(" ", "").lower == n:
+                        course["Class Number"] = msg[1]
+                        course["Professor"] = msg[4]
+                        course["Section"] = msg[3]
+                        match = True
+                        break
+                if match is False:
+                    globals()[newusername].classes.append(
+                        {"Class Name" : msg[0],
                             "Class Number" : msg[1],
                             "Professor" : msg[4],
                             "Section" : msg[3]}
-                        )
-                    await ctx.send(globals()[newclassname].latestClassOutput())
-
-        #If the user class doesnt exist already, create it                
-        if match2 is False:
+                    )
+                match = False
+        else:
             classlst = list()
             for msg in msgs_split:
-                #Gets each messages and adds the neccessary info to add to the class list
                 classlst.append({
                     "Class Name" : msg[0],
                     "Class Number" : msg[1],
                     "Professor": msg[4], 
                     "Section" : msg[3]
                 })
-
-            userobjs.append(newclassname)
-            globals()[newclassname] = User(userid = authID, classes= classlst, nickname = "")
-            await ctx.send(globals()[newclassname].latestClassOutput())
-            del classlst
+            globals()[newusername] = User(userid= authID, classes= classlst, nickname="")
+            userobjs.append(newusername)
+        await ctx.send(globals()[newusername].output())
 
 
-
-
-
-        #For loop to add/adjust Course Objects
+        #COURSE OBJECTS
+        match = False
         for msg in msgs_split:
-            match = False
-            
-            #Goes through each of  global variables and compares it to each of the course names in the past messages
-            for key in courseobjs:
-
-                #If there is a match
-                if msg[0].replace(" ", "").lower == key:
+            n = msg[0].replace(" ", "").lower
+            for course in courseobjs:
+                if course == n:
+                    globals()[n].addMember(authID)
+                    globals()[n].addSection(msg[3])
+                    globals()[n].addProf(msg[4])
                     match = True
-                    #Add professors, sections, and members, builtin functions account for redundancy
-                    globals()[key].addProf(msg[4])
-                    globals()[key].addSection(msg[3])
-                    globals()[key].addMember(authID)
-                    await ctx.send(globals()[key].output())
-                    
-            #If there is no match, in any of the global variables
+                    break
             if match is False:
-                cname = msg[0].replace(" ", "").lower
-                courseobjs.append(cname)
-                globals()[cname] = Course(msg[0], msg[1], msg[2], [msg[3]], [msg[4]], [authID])
-                await ctx.send(globals()[cname].output())
+                globals()[n] = Course(msg[0], msg[1], msg[2], [msg[3]], [msg[4]], [authID])
+            await ctx.send(globals()[n].output())
+        
+
+
+
+
+
+
 
 
     else:
