@@ -134,16 +134,22 @@ async def END(ctx):
 
         #USER CLASS OBJECTS
         match = False
+
+        #If the User Class already exists
         if newusername in userobjs:
+            #Go through each message
             for msg in msgs_split:
+                #Go through each existing stored class 
                 for course in globals()[newusername].classes:
                     n = msg[0].replace(" ", "").lower
+                    #If the course already exists in the user class adjust the values
                     if course["Class Name"].replace(" ", "").lower == n:
                         course["Class Number"] = msg[1]
                         course["Professor"] = msg[4]
                         course["Section"] = msg[3]
                         match = True
                         break
+                #If the course doesnt exist, append it
                 if match is False:
                     globals()[newusername].classes.append(
                         {"Class Name" : msg[0],
@@ -152,6 +158,7 @@ async def END(ctx):
                             "Section" : msg[3]}
                     )
                 match = False
+        #If the user doesn't exist, create it
         else:
             classlst = list()
             for msg in msgs_split:
@@ -168,8 +175,10 @@ async def END(ctx):
 
         #COURSE OBJECTS
         match = False
+        #Go through each message
         for msg in msgs_split:
             n = msg[0].replace(" ", "").lower
+            #Go through existing course objects
             for course in courseobjs:
                 if course == n:
                     globals()[n].addMember(authID)
@@ -177,18 +186,12 @@ async def END(ctx):
                     globals()[n].addProf(msg[4])
                     match = True
                     break
+            #If course doesnt exist
             if match is False:
                 globals()[n] = Course(msg[0], msg[1], msg[2], [msg[3]], [msg[4]], [authID])
             await ctx.send(globals()[n].output())
         
-
-
-
-
-
-
-
-
+    #If the command was sent somewhere or by someone who isnt eligible
     else:
         await ctx.send("This command is not supported here...")
 
