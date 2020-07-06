@@ -19,6 +19,9 @@ keyfile.close()
 userobjs = list()
 courseobjs = list()
 
+#Variable to be used to store server info
+serverid = 0
+
 
 #Loading the pickle files with the stored objects from previous cycles of the program
 try: #Try to open current version of pkl output for objects
@@ -72,6 +75,8 @@ async def on_ready():
 #This function mostly serves to test various discord interactions
 @bot.command()
 async def Initialize(ctx):
+    global serverid
+    serverid = ctx.message.guild
     await ctx.send(ctx.message.author.mention)
     print(ctx.message.author.id)
 
@@ -79,6 +84,8 @@ async def Initialize(ctx):
 #Sends a DM to the person who used this command with the necessary information to correctly utilize the .End function
 @bot.command()
 async def IndividualClass(ctx):
+    global serverid
+    serverid = ctx.message.guild
     men = ctx.message.mentions
     for person in men:
         await person.send("Please type in your classes in the following format, one class per message please. Finalize the message by sending .END")
