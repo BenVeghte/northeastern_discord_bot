@@ -148,9 +148,9 @@ async def END(ctx):
             for msg in msgs_split:
                 #Go through each existing stored class 
                 for course in globals()[newusername].classes:
-                    n = msg[0].replace(" ", "").lower
+                    n = msg[0].replace(" ", "").lower()
                     #If the course already exists in the user class adjust the values
-                    if course["Class Name"].replace(" ", "").lower == n:
+                    if course["Class Name"].replace(" ", "").lower() == n:
                         course["Class Number"] = msg[1]
                         course["Professor"] = msg[4]
                         course["Section"] = msg[3]
@@ -182,20 +182,34 @@ async def END(ctx):
 
         #COURSE OBJECTS
         match = False
+        global serverid
         #Go through each message
         for msg in msgs_split:
-            n = msg[0].replace(" ", "").lower
+            n = msg[0].replace(" ", "").lower()
             #Go through existing course objects
             for course in courseobjs:
+                #If the Course Exists
                 if course == n:
-                    globals()[n].addMember(authID)
+                    globals()[n].addMember(int(authID))
                     globals()[n].addSection(msg[3])
                     globals()[n].addProf(msg[4])
+                    print("Match Found")
                     match = True
                     break
             #If course doesnt exist
             if match is False:
+                courseobjs.append(n)
                 globals()[n] = Course(msg[0], msg[1], msg[2], [msg[3]], [msg[4]], [authID])
+                mg = msg[0].strip().lower().replace(" ", "-")
+                text = get(serverid.text_channels, name = mg)
+                print(text)
+                catename = msg[2].upper().strip()
+                cate = get(serverid.categories, name = catename)
+                print(cate)
+                if cate is None:
+                    await serverid.create_category_channel(catename)
+                if text is None:
+                    await serverid.create_text_channel(mg, category = get(serverid.categories, name = catename))
             await ctx.send(globals()[n].output())
         
     #If the command was sent somewhere or by someone who isnt eligible
